@@ -11,7 +11,8 @@ export class NewsItem extends Component {
     return ( 
       <div className="my-3">
         <div className="card" style={{width: "18rem"}}>
-          <img src={imageURL} className="card-img-top" alt="..."></img>
+          <img src={!imageURL?"https://cdn.mos.cms.futurecdn.net/xkj7G3puAgdsqBWQZZmjRM-2560-80.jpg":imageURL} className="card-img-top" alt="..."></img>
+          {/* If imageURL null - used a default image */}
           <div className="card-body">
             <h5 className="card-title">{title}</h5>
             <p className="card-text">

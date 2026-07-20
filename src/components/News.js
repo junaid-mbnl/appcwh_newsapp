@@ -70,7 +70,7 @@ export default class News extends Component {
       content:
         "Last week, we at ESPNcricinfo did something we have been thinking of doing for eight years now: pretend-live ball-by-ball commentary for a classic cricket match. We knew the result, yes, but we tried… [+6823 chars]",
     },
-  ];
+  ]; //These articles value will be taken first so at reloading - Nem will see it for fraction of a second unless the API is fetched. Or remove the initial ones and at this.articles in constructor give it articles : [],
   constructor() {
     super(); //consider it as a formality.
     console.log("Constructor of News");
@@ -78,6 +78,13 @@ export default class News extends Component {
       articles: this.articles,
       loading: false,
     };
+  }
+  async componentDidMount(){
+    let url = "https://newsapi.org/v2/everything?q=tesla&from=2026-06-20&sortBy=publishedAt&apiKey=23921384f33f4db294547c7ca80741d0";
+    let data = await fetch(url);
+    let parsedData = await data.json();
+    console.log(parsedData)
+    this.setState({articles: parsedData.articles})
   }
   render() {
     return (
@@ -89,8 +96,8 @@ export default class News extends Component {
               //This key below (unique) argument is a necessity while mapping and iterating, we have url as the unique factor. And it is about the div that is being returned, not the internal divs.
               <div className="col-md-4" key={element.url}>
                 <NewsItem
-                  title={element.title.slice(0,45)} //Slicing is being done to give the card a uniform size.
-                  description={element.description.slice(0,88)}
+                  title={element.title?element.title.slice(0,45):""} //Slicing is being done to give the card a uniform size. Question mark check is ternary operator, it checks if what we are slicing is not NULL. ! means not.
+                  description={element.description?element.description.slice(0,88):""}
                   imageURL={element.urlToImage}
                   newsURL={element.url}
                 />
