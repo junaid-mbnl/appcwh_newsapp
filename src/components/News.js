@@ -2,90 +2,51 @@ import React, { Component } from "react";
 import NewsItem from "./NewsItem";
 
 export default class News extends Component {
-  articles = [
-    {
-      source: {
-        id: "bbc-sport",
-        name: "BBC Sport",
-      },
-      author: null,
-      title:
-        "England vs India LIVE: Third ODI, Lord's - cricket score, commentary & video highlights",
-      description:
-        "England play India in the third one-day international at Lord's - follow live scores, radio commentary and video highlights.",
-      url: "http://www.bbc.co.uk/sport/cricket/live/c4g465wyej5t",
-      urlToImage:
-        "https://ichef.bbci.co.uk/ace/branded_sport/1200/cpsprodpb/bbb9/live/99535ad0-835d-11f1-8d99-f1f0cec0b1ae.jpg",
-      publishedAt: "2026-07-19T11:07:27.4986714Z",
-      content:
-        "Deep DasguptaFormer India wicketkeeper on BBC Radio 5 Sports Extra\r\nIt's been quite interesting so far. I'm surprised that India have come in with four seamers, quite inexperienced ones.\r\nI saw the p… [+242 chars]",
-    },
-    {
-      source: {
-        id: "techradar",
-        name: "TechRadar",
-      },
-      author: "Roderick Easdale",
-      title:
-        "How to watch England vs India 2026 ODI series: cricket live streams, schedule, preview",
-      description: "The match at Lord's is the series decider",
-      url: "https://www.techradar.com/how-to-watch/cricket/england-vs-india-2026-odi-series",
-      urlToImage:
-        "https://cdn.mos.cms.futurecdn.net/xkj7G3puAgdsqBWQZZmjRM-2560-80.jpg",
-      publishedAt: "2026-07-14T08:00:00Z",
-      content:
-        "The England v India 3rd ODI 2026 at Lord’s is the series decider. For England, it offers a rare chance to beat India in a bilateral ODI series – England have won only seven of 21 previous series; and… [+6132 chars]",
-    },
-    {
-      source: {
-        id: "espn-cric-info",
-        name: "ESPN Cric Info",
-      },
-      author: null,
-      title:
-        "PCB hands Umar Akmal three-year ban from all cricket | ESPNcricinfo.com",
-      description:
-        "Penalty after the batsman pleaded guilty to not reporting corrupt approaches | ESPNcricinfo.com",
-      url: "http://www.espncricinfo.com/story/_/id/29103103/pcb-hands-umar-akmal-three-year-ban-all-cricket",
-      urlToImage:
-        "https://a4.espncdn.com/combiner/i?img=%2Fi%2Fcricket%2Fcricinfo%2F1099495_800x450.jpg",
-      publishedAt: "2020-04-27T11:41:47Z",
-      content:
-        "Umar Akmal's troubled cricket career has hit its biggest roadblock yet, with the PCB handing him a ban from all representative cricket for three years after he pleaded guilty of failing to report det… [+1506 chars]",
-    },
-    {
-      source: {
-        id: "espn-cric-info",
-        name: "ESPN Cric Info",
-      },
-      author: null,
-      title:
-        "What we learned from watching the 1992 World Cup final in full again | ESPNcricinfo.com",
-      description:
-        "Wides, lbw calls, swing - plenty of things were different in white-ball cricket back then | ESPNcricinfo.com",
-      url: "http://www.espncricinfo.com/story/_/id/28970907/learned-watching-1992-world-cup-final-full-again",
-      urlToImage:
-        "https://a4.espncdn.com/combiner/i?img=%2Fi%2Fcricket%2Fcricinfo%2F1219926_1296x729.jpg",
-      publishedAt: "2020-03-30T15:26:05Z",
-      content:
-        "Last week, we at ESPNcricinfo did something we have been thinking of doing for eight years now: pretend-live ball-by-ball commentary for a classic cricket match. We knew the result, yes, but we tried… [+6823 chars]",
-    },
-  ]; //These articles value will be taken first so at reloading - Nem will see it for fraction of a second unless the API is fetched. Or remove the initial ones and at this.articles in constructor give it articles : [],
   constructor() {
-    super(); //consider it as a formality.
+    super(); //consider it as a htmlFormality.
     console.log("Constructor of News");
     this.state = {
-      articles: this.articles,
+      articles: [],
       loading: false,
+      page: 1,
     };
   }
-  async componentDidMount(){
-    let url = "https://newsapi.org/v2/everything?q=tesla&from=2026-06-20&sortBy=publishedAt&apiKey=23921384f33f4db294547c7ca80741d0";
+  async componentDidMount() {
+    let url =
+      "https://newsapi.org/v2/top-headlines?country=us&from=2026-06-20&sortBy=publishedAt&apiKey=23921384f33f4db294547c7ca80741d0&page=1&pagesize=9";
     let data = await fetch(url);
     let parsedData = await data.json();
-    console.log(parsedData)
-    this.setState({articles: parsedData.articles})
+    console.log(parsedData);
+    this.setState({
+      articles: parsedData.articles,
+      totalArticles: parsedData.totalResults,
+    }); //yes it is saved by name totalResults in the response; yes we added a new attribute which we didn't wrote while defining above.
   }
+
+  handlePrevClick = async () => {
+    let url = `https://newsapi.org/v2/top-headlines?country=us&from=2026-06-20&sortBy=publishedAt&apiKey=23921384f33f4db294547c7ca80741d0&page=${this.state.page - 1}&pagesize=9`;
+    let data = await fetch(url);
+    let parsedData = await data.json();
+    console.log(parsedData);
+    this.setState({
+      page: this.state.page - 1,
+      articles: parsedData.articles,
+    });
+  };
+  handleNextClick = async () => {
+    if (this.state.page + 1 > Math.ceil(this.state.totalArticles / 9)) {
+      //Nothing
+    } else {
+      let url = `https://newsapi.org/v2/top-headlines?country=us&from=2026-06-20&sortBy=publishedAt&apiKey=23921384f33f4db294547c7ca80741d0&page=${this.state.page + 1}&pagesize=9`;
+      let data = await fetch(url);
+      let parsedData = await data.json();
+      console.log(parsedData);
+      this.setState({
+        page: this.state.page + 1,
+        articles: parsedData.articles,
+      });
+    }
+  };
   render() {
     return (
       <div className="container my-3">
@@ -96,8 +57,10 @@ export default class News extends Component {
               //This key below (unique) argument is a necessity while mapping and iterating, we have url as the unique factor. And it is about the div that is being returned, not the internal divs.
               <div className="col-md-4" key={element.url}>
                 <NewsItem
-                  title={element.title?element.title.slice(0,45):""} //Slicing is being done to give the card a uniform size. Question mark check is ternary operator, it checks if what we are slicing is not NULL. ! means not.
-                  description={element.description?element.description.slice(0,88):""}
+                  title={element.title ? element.title.slice(0, 45) : ""} //Slicing is being done to give the card a unihtmlForm size. Question mark check is ternary operator, it checks if what we are slicing is not NULL. ! means not.
+                  description={
+                    element.description ? element.description.slice(0, 88) : ""
+                  }
                   imageURL={element.urlToImage}
                   newsURL={element.url}
                 />
@@ -106,28 +69,22 @@ export default class News extends Component {
           })}
         </div>
         <hr></hr>
-        <div className="row">
-          <div className="col-md-4">
-            <NewsItem
-              title="ODI"
-              description="We won"
-              imageURL="https://ichef.bbci.co.uk/ace/branded_sport/1200/cpsprodpb/bbb9/live/99535ad0-835d-11f1-8d99-f1f0cec0b1ae.jpg"
-            />
-          </div>
-          <div className="col-md-4">
-            <NewsItem
-              title="ODI"
-              description="We won"
-              imageURL="https://ichef.bbci.co.uk/ace/branded_sport/1200/cpsprodpb/bbb9/live/99535ad0-835d-11f1-8d99-f1f0cec0b1ae.jpg"
-            />
-          </div>
-          <div className="col-md-4">
-            <NewsItem
-              title="ODI"
-              description="We won"
-              imageURL="https://ichef.bbci.co.uk/ace/branded_sport/1200/cpsprodpb/bbb9/live/99535ad0-835d-11f1-8d99-f1f0cec0b1ae.jpg"
-            />
-          </div>
+        <div className="container d-flex justify-content-between">
+          <button
+            type="button"
+            disabled={this.state.page <= 1}
+            className="btn btn-outline-dark"
+            onClick={this.handlePrevClick}
+          >
+            &larr; Previous
+          </button>
+          <button
+            type="button"
+            className="btn btn-outline-dark"
+            onClick={this.handleNextClick}
+          >
+            Next &rarr;
+          </button>
         </div>
       </div>
     );
