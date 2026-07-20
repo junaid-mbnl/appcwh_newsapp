@@ -7,7 +7,7 @@ export class NewsItem extends Component {
   //   console.log('Constructor of NewsItem')
   // }
   render() {
-    let {title, description, imageURL} =  this.props; //This is destructuring, this.props returns object, we took it as title, description.
+    let {title, description, imageURL, newsURL} =  this.props; //This is destructuring, this.props returns object, we took it as title, description.
     return ( 
       <div className="my-3">
         <div className="card" style={{width: "18rem"}}>
@@ -17,7 +17,7 @@ export class NewsItem extends Component {
             <p className="card-text">
               {description}
             </p>
-            <a href="/newsdetail/" className="btn btn-sm btn-primary">
+            <a href={newsURL} className="btn btn-sm btn-primary">
               Read More
             </a>
           </div>

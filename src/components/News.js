@@ -71,38 +71,55 @@ export default class News extends Component {
         "Last week, we at ESPNcricinfo did something we have been thinking of doing for eight years now: pretend-live ball-by-ball commentary for a classic cricket match. We knew the result, yes, but we tried… [+6823 chars]",
     },
   ];
-  constructor(){
+  constructor() {
     super(); //consider it as a formality.
-    console.log('Constructor of News');
+    console.log("Constructor of News");
     this.state = {
       articles: this.articles,
       loading: false,
-    }
+    };
   }
   render() {
     return (
       <div className="container my-3">
         <h2>NewsMonkey - Top Headlines</h2>
         <div className="row">
-          <div className="col-md-4">
-            <NewsItem title="ODI" description="We won" imageURL="https://ichef.bbci.co.uk/ace/branded_sport/1200/cpsprodpb/bbb9/live/99535ad0-835d-11f1-8d99-f1f0cec0b1ae.jpg"/>
-          </div>
-          <div className="col-md-4">
-            <NewsItem title="ODI" description="We won" imageURL="https://ichef.bbci.co.uk/ace/branded_sport/1200/cpsprodpb/bbb9/live/99535ad0-835d-11f1-8d99-f1f0cec0b1ae.jpg"/>
-          </div>
-          <div className="col-md-4">
-            <NewsItem title="ODI" description="We won" imageURL="https://ichef.bbci.co.uk/ace/branded_sport/1200/cpsprodpb/bbb9/live/99535ad0-835d-11f1-8d99-f1f0cec0b1ae.jpg"/>
-          </div>
+          {this.state.articles.map((element) => {
+            return (
+              //This key below (unique) argument is a necessity while mapping and iterating, we have url as the unique factor. And it is about the div that is being returned, not the internal divs.
+              <div className="col-md-4" key={element.url}>
+                <NewsItem
+                  title={element.title.slice(0,45)} //Slicing is being done to give the card a uniform size.
+                  description={element.description.slice(0,88)}
+                  imageURL={element.urlToImage}
+                  newsURL={element.url}
+                />
+              </div>
+            );
+          })}
         </div>
+        <hr></hr>
         <div className="row">
           <div className="col-md-4">
-            <NewsItem title="ODI" description="We won" imageURL="https://ichef.bbci.co.uk/ace/branded_sport/1200/cpsprodpb/bbb9/live/99535ad0-835d-11f1-8d99-f1f0cec0b1ae.jpg"/>
+            <NewsItem
+              title="ODI"
+              description="We won"
+              imageURL="https://ichef.bbci.co.uk/ace/branded_sport/1200/cpsprodpb/bbb9/live/99535ad0-835d-11f1-8d99-f1f0cec0b1ae.jpg"
+            />
           </div>
           <div className="col-md-4">
-            <NewsItem title="ODI" description="We won" imageURL="https://ichef.bbci.co.uk/ace/branded_sport/1200/cpsprodpb/bbb9/live/99535ad0-835d-11f1-8d99-f1f0cec0b1ae.jpg"/>
+            <NewsItem
+              title="ODI"
+              description="We won"
+              imageURL="https://ichef.bbci.co.uk/ace/branded_sport/1200/cpsprodpb/bbb9/live/99535ad0-835d-11f1-8d99-f1f0cec0b1ae.jpg"
+            />
           </div>
           <div className="col-md-4">
-            <NewsItem title="ODI" description="We won" imageURL="https://ichef.bbci.co.uk/ace/branded_sport/1200/cpsprodpb/bbb9/live/99535ad0-835d-11f1-8d99-f1f0cec0b1ae.jpg"/>
+            <NewsItem
+              title="ODI"
+              description="We won"
+              imageURL="https://ichef.bbci.co.uk/ace/branded_sport/1200/cpsprodpb/bbb9/live/99535ad0-835d-11f1-8d99-f1f0cec0b1ae.jpg"
+            />
           </div>
         </div>
       </div>
