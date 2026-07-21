@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import {Link} from "react-router-dom";
 
 export default class Navbar extends Component {
   render() {
@@ -75,6 +76,13 @@ export default class Navbar extends Component {
                     Disabled
                   </a>
                 </li>
+                <li className="nav-item"><span className="nav-link">|</span></li>
+                <li className="nav-item"><Link className="nav-link" to="/business">Business</Link></li>
+                <li className="nav-item"><Link className="nav-link" to="/entertainment">Entertainment</Link></li>
+                <li className="nav-item"><Link className="nav-link" to="/science">Science</Link></li>
+                <li className="nav-item"><Link className="nav-link" to="/sports">Sports</Link></li>
+                <li className="nav-item"><Link className="nav-link" to="/technology">Technology</Link></li>
+                <li className="nav-item"><Link className="nav-link" to="/health">Health</Link></li>
               </ul>
               <form className="d-flex" role="search">
                 <input

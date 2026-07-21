@@ -12,3 +12,5 @@ Timing of state change -- Is there any role of React noting down what is to be u
 Nem is skipping this because it is risky for time consumption purpose. Let us see what D1119 does.
 
 Issue Resolved - API key - date, select today'd date in URL - at least in this particular free version.
+
+It was pageSize not pagesize int he URL.
