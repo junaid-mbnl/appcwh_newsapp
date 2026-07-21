@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import NewsItem from "./NewsItem";
+import Spinner from "./Spinner";
 
 export default class News extends Component {
   constructor() {
@@ -12,38 +13,47 @@ export default class News extends Component {
     };
   }
   async componentDidMount() {
-    let url =
-      "https://newsapi.org/v2/top-headlines?country=us&from=2026-06-20&sortBy=publishedAt&apiKey=23921384f33f4db294547c7ca80741d0&page=1&pagesize=9";
+    let url = `https://newsapi.org/v2/top-headlines?country=us&from=2026-06-21&sortBy=publishedAt&apiKey=23921384f33f4db294547c7ca80741d0&page=1&pagesize=${this.props.pageSize}`;
+    this.setState({ loading: true });
     let data = await fetch(url);
     let parsedData = await data.json();
     console.log(parsedData);
     this.setState({
       articles: parsedData.articles,
       totalArticles: parsedData.totalResults,
+      loading: false,
     }); //yes it is saved by name totalResults in the response; yes we added a new attribute which we didn't wrote while defining above.
   }
 
   handlePrevClick = async () => {
-    let url = `https://newsapi.org/v2/top-headlines?country=us&from=2026-06-20&sortBy=publishedAt&apiKey=23921384f33f4db294547c7ca80741d0&page=${this.state.page - 1}&pagesize=9`;
+    let url = `https://newsapi.org/v2/top-headlines?country=us&from=2026-06-21&sortBy=publishedAt&apiKey=23921384f33f4db294547c7ca80741d0&page=${this.state.page - 1}&pagesize=${this.props.pageSize}`;
+    this.setState({ loading: true });
     let data = await fetch(url);
     let parsedData = await data.json();
     console.log(parsedData);
     this.setState({
       page: this.state.page - 1,
       articles: parsedData.articles,
+      loading: false,
     });
   };
   handleNextClick = async () => {
-    if (this.state.page + 1 > Math.ceil(this.state.totalArticles / 9)) {
-      //Nothing
+    if (
+      this.state.page + 1 >
+      Math.ceil(this.state.totalArticles / this.props.pageSize)
+    ) {
+      //Disable the button - go and check the button disabling code
     } else {
-      let url = `https://newsapi.org/v2/top-headlines?country=us&from=2026-06-20&sortBy=publishedAt&apiKey=23921384f33f4db294547c7ca80741d0&page=${this.state.page + 1}&pagesize=9`;
+      let url = `https://newsapi.org/v2/top-headlines?country=us&from=2026-06-21&sortBy=publishedAt&apiKey=23921384f33f4db294547c7ca80741d0&page=${this.state.page + 1}&pagesize=${this.props.pageSize}`;
+      this.setState({ loading: true });
+
       let data = await fetch(url);
       let parsedData = await data.json();
       console.log(parsedData);
       this.setState({
         page: this.state.page + 1,
         articles: parsedData.articles,
+        loading: false,
       });
     }
   };
@@ -51,8 +61,9 @@ export default class News extends Component {
     return (
       <div className="container my-3">
         <h2>NewsMonkey - Top Headlines</h2>
+        {this.state.loading && <Spinner />}
         <div className="row">
-          {this.state.articles.map((element) => {
+          {!this.state.loading && this.state.articles.map((element) => {
             return (
               //This key below (unique) argument is a necessity while mapping and iterating, we have url as the unique factor. And it is about the div that is being returned, not the internal divs.
               <div className="col-md-4" key={element.url}>
@@ -80,6 +91,10 @@ export default class News extends Component {
           </button>
           <button
             type="button"
+            disabled={
+              this.state.page + 1 >
+              Math.ceil(this.state.totalArticles / this.props.pageSize)
+            }
             className="btn btn-outline-dark"
             onClick={this.handleNextClick}
           >

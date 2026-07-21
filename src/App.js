@@ -7,7 +7,7 @@ function App() {
   return (
     <div className="App">
       <Navbar/>
-      <News/>
+      <News pageSize={6}/>
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>

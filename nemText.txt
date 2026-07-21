@@ -10,3 +10,5 @@ If pagesize != pagesize given by the response, will number of pages be manipulat
 
 Timing of state change -- Is there any role of React noting down what is to be updated together in the next render?
 Nem is skipping this because it is risky for time consumption purpose. Let us see what D1119 does.
+
+Issue Resolved - API key - date, select today'd date in URL - at least in this particular free version.
