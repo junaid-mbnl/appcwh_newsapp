@@ -15,29 +15,17 @@ export default class News extends Component {
     pageSize: PropTypes.number,
     category: PropTypes.string,
   };
-  constructor() {
-    super(); //consider it as a htmlFormality.
+  constructor(props) {
+    super(props); //consider it as a htmlFormality.
     console.log("Constructor of News");
     this.state = {
       articles: [],
       loading: false,
       page: 1,
     };
+    document.title = `${this.props.category} - NewsMonkey`;
   }
-  async componentDidMount() {
-    let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&from=2026-06-21&sortBy=publishedAt&category=${this.props.category}&apiKey=23921384f33f4db294547c7ca80741d0&page=1&pageSize=${this.props.pageSize}`;
-    this.setState({ loading: true });
-    let data = await fetch(url);
-    let parsedData = await data.json();
-    console.log(parsedData);
-    this.setState({
-      articles: parsedData.articles,
-      totalArticles: parsedData.totalResults,
-      loading: false,
-    }); //yes it is saved by name totalResults in the response; yes we added a new attribute which we didn't wrote while defining above.
-  }
-
-  handlePrevClick = async () => {
+  async updateNews(){
     let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&from=2026-06-21&sortBy=publishedAt&category=${this.props.category}&apiKey=23921384f33f4db294547c7ca80741d0&page=${this.state.page - 1}&pageSize=${this.props.pageSize}`;
     this.setState({ loading: true });
     let data = await fetch(url);
@@ -47,32 +35,23 @@ export default class News extends Component {
       page: this.state.page - 1,
       articles: parsedData.articles,
       loading: false,
-    });
+    }); //yes it is saved by name totalResults in the response; yes we added a new attribute which we didn't wrote while defining above.
+  };
+  async componentDidMount() {
+    this.updateNews()
+  };
+  handlePrevClick = async () => {
+    this.setState({page: this.state.page - 1})
+    this.updateNews();
   };
   handleNextClick = async () => {
-    if (
-      this.state.page + 1 >
-      Math.ceil(this.state.totalArticles / this.props.pageSize)
-    ) {
-      //Disable the button - go and check the button disabling code
-    } else {
-      let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&from=2026-06-21&sortBy=publishedAt&category=${this.props.category}&apiKey=23921384f33f4db294547c7ca80741d0&page=${this.state.page + 1}&pageSize=${this.props.pageSize}`;
-      this.setState({ loading: true });
-
-      let data = await fetch(url);
-      let parsedData = await data.json();
-      console.log(parsedData);
-      this.setState({
-        page: this.state.page + 1,
-        articles: parsedData.articles,
-        loading: false,
-      });
-    }
+    this.setState({page: this.state.page + 1})
+    this.updateNews()
   };
   render() {
     return (
       <div className="container my-3">
-        <h2>NewsMonkey - Top Headlines</h2>
+        <h2>NewsMonkey - Top Headlines on {this.props.category}</h2>
         {this.state.loading && <Spinner />}
         <div className="row">
           {!this.state.loading && this.state.articles.map((element) => {
