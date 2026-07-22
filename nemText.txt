@@ -3,3 +3,6 @@ Infinite Scroll.
 The upper data will remain, new will be concatenated to it. No need to destroy the above data. When Next was clicked - the function that was running was making the state of loading as true - which then required for the new cards to be dismounted.
 
 Videos : vd_260722_222100, vd_260722_222101 --> when is state changed problem instance.
+
+Remember - to see the effects of env.local avriables - Nem must restart the node server.
+The name of the env.local variable might must be start from REACT_APP for it to be directly accessed by the react app.
