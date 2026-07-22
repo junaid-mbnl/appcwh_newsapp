@@ -27,16 +27,21 @@ export default class News extends Component {
     document.title = `${this.props.category} - NewsMonkey`;
   }
   async updateNews(){
+    this.props.setProgress(10)
     let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&from=2026-06-22&sortBy=publishedAt&category=${this.props.category}&apiKey=23921384f33f4db294547c7ca80741d0&page=${this.state.page}&pageSize=${this.props.pageSize}`;
     this.setState({ loading: true });
     let data = await fetch(url);
+    this.props.setProgress(30)
     let parsedData = await data.json();
+    this.props.setProgress(70)
     console.log(parsedData);
     this.setState({
       articles: parsedData.articles,
       totalResults: parsedData.totalResults,
       loading: false,
     }); //yes it is saved by name totalResults in the response; yes we added a new attribute which we didn't wrote while defining above.
+    this.props.setProgress(100)
+
   };
   async componentDidMount() {
     this.updateNews()
