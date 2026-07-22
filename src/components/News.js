@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import NewsItem from "./NewsItem";
 import Spinner from "./Spinner";
 import PropTypes from 'prop-types';
-
+import InfiniteScroll from "react-infinite-scroll-component";
 export default class News extends Component {
 
   static defaultProps = {
@@ -20,82 +20,65 @@ export default class News extends Component {
     console.log("Constructor of News");
     this.state = {
       articles: [],
-      loading: false,
+      loading: true,
       page: 1,
+      totalResults:0,
     };
     document.title = `${this.props.category} - NewsMonkey`;
   }
   async updateNews(){
-    let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&from=2026-06-21&sortBy=publishedAt&category=${this.props.category}&apiKey=23921384f33f4db294547c7ca80741d0&page=${this.state.page - 1}&pageSize=${this.props.pageSize}`;
+    let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&from=2026-06-22&sortBy=publishedAt&category=${this.props.category}&apiKey=23921384f33f4db294547c7ca80741d0&page=${this.state.page}&pageSize=${this.props.pageSize}`;
     this.setState({ loading: true });
     let data = await fetch(url);
     let parsedData = await data.json();
     console.log(parsedData);
     this.setState({
-      page: this.state.page - 1,
       articles: parsedData.articles,
+      totalResults: parsedData.totalResults,
       loading: false,
     }); //yes it is saved by name totalResults in the response; yes we added a new attribute which we didn't wrote while defining above.
   };
   async componentDidMount() {
     this.updateNews()
   };
-  handlePrevClick = async () => {
-    this.setState({page: this.state.page - 1})
-    this.updateNews();
-  };
-  handleNextClick = async () => {
-    this.setState({page: this.state.page + 1})
-    this.updateNews()
-  };
+  fetchMoreData = async () =>{
+    const nextPage= this.state.page+1;
+    this.setState({page: nextPage})
+    let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&from=2026-06-22&sortBy=publishedAt&category=${this.props.category}&apiKey=23921384f33f4db294547c7ca80741d0&page=${nextPage}&pageSize=${this.props.pageSize}`;
+    let data = await fetch(url);
+    let parsedData = await data.json();
+    console.log(parsedData);
+    this.setState({
+      articles: this.state.articles.concat(parsedData.articles),
+      totalResults: parsedData.totalResults,
+    });
+  }
   render() {
     return (
-      <div className="container my-3">
+      <>
         <h2>NewsMonkey - Top Headlines on {this.props.category}</h2>
         {this.state.loading && <Spinner />}
-        <div className="row">
-          {!this.state.loading && this.state.articles.map((element) => {
-            return (
-              //This key below (unique) argument is a necessity while mapping and iterating, we have url as the unique factor. And it is about the div that is being returned, not the internal divs.
-              <div className="col-md-4" key={element.url}>
-                <NewsItem
-                  title={element.title ? element.title.slice(0, 45) : ""} //Slicing is being done to give the card a unihtmlForm size. Question mark check is ternary operator, it checks if what we are slicing is not NULL. ! means not.
-                  description={
-                    element.description ? element.description.slice(0, 88) : ""
-                  }
-                  imageURL={element.urlToImage}
-                  newsURL={element.url}
-                  author={element.author}
-                  date={element.publishedAt}
-                  source={element.source.name}
-                />
-              </div>
-            );
-          })}
-        </div>
+        <InfiniteScroll dataLength={this.state.articles.length} next={this.fetchMoreData} hasMore={this.state.articles.length!==this.state.totalResults} loader={<Spinner/>}>
+          <div className="container">
+          <div className="row">
+            {this.state.articles.map((element) => {
+              return (
+                //This key below (unique) argument is a necessity while mapping and iterating, we have url as the unique factor. And it is about the div that is being returned, not the internal divs.
+                <div className="col-md-4" key={element.url}>
+                  <NewsItem title={element.title ? element.title.slice(0, 45) : ""} //Slicing is being done to give the card a unihtmlForm size. Question mark check is ternary operator, it checks if what we are slicing is not NULL. ! means not.
+                    description={element.description ? element.description.slice(0, 88) : ""} imageURL={element.urlToImage}
+                    newsURL={element.url}
+                    author={element.author}
+                    date={element.publishedAt}
+                    source={element.source.name}/>
+                </div>
+              );
+            })}
+          </div>
+          </div>
+        </InfiniteScroll>
         <hr></hr>
-        <div className="container d-flex justify-content-between">
-          <button
-            type="button"
-            disabled={this.state.page <= 1}
-            className="btn btn-outline-dark"
-            onClick={this.handlePrevClick}
-          >
-            &larr; Previous
-          </button>
-          <button
-            type="button"
-            disabled={
-              this.state.page + 1 >
-              Math.ceil(this.state.totalArticles / this.props.pageSize)
-            }
-            className="btn btn-outline-dark"
-            onClick={this.handleNextClick}
-          >
-            Next &rarr;
-          </button>
-        </div>
-      </div>
+      </>
     );
   }
 }

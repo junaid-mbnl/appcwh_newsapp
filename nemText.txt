@@ -1,16 +1,5 @@
-Website of the API news website = {https://newsapi.org/docs/endpoints/top-headlines}
+------------
+Infinite Scroll.
+The upper data will remain, new will be concatenated to it. No need to destroy the above data. When Next was clicked - the function that was running was making the state of loading as true - which then required for the new cards to be dismounted.
 
-Problem: Now showing all articles on the first go. So page number 2 concept.
-[https://newsapi.org/v2/everything?q=tesla&from=2026-06-20&sortBy=publishedAt&apiKey=23921384f33f4db294547c7ca80741d0&page=2]
-This &page=2 more if were in URL.
-By default it is already &page=1 even if it is not added, adding it won't make a difference.
-
-Doubts Retained: 
-If pagesize != pagesize given by the response, will number of pages be manipulated to adjust all? or will they be simply skipped.
-
-Timing of state change -- Is there any role of React noting down what is to be updated together in the next render?
-Nem is skipping this because it is risky for time consumption purpose. Let us see what D1119 does.
-
-Issue Resolved - API key - date, select today'd date in URL - at least in this particular free version.
-
-It was pageSize not pagesize int he URL.
+Videos : vd_260722_222100, vd_260722_222101 --> when is state changed problem instance.

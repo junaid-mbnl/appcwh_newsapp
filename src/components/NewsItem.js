@@ -12,7 +12,7 @@ export class NewsItem extends Component {
       <div className="my-3">
         <div className="card" style={{width: "18rem"}}>
           <span className="position-absolute top-0 translate-middle badge rounded-pill bg-success" style={{left: "90%", zIndex:1}}>{source}</span>
-          <img src={!imageURL?"https://cdn.mos.cms.futurecdn.net/xkj7G3puAgdsqBWQZZmjRM-2560-80.jpg":imageURL} className="card-img-top" alt="..."></img>
+          <img src={imageURL || "https://cdn.mos.cms.futurecdn.net/xkj7G3puAgdsqBWQZZmjRM-2560-80.jpg"} className="card-img-top" alt="..." onError={(e)=>{e.target.src="https://cdn.mos.cms.futurecdn.net/xkj7G3puAgdsqBWQZZmjRM-2560-80.jpg"}}></img>
           {/* If imageURL null - used a default image */}
           <div className="card-body">
             <h5 className="card-title">{title}</h5>
